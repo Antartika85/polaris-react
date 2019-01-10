@@ -23,7 +23,11 @@ export interface Props extends HeaderProps {
   fullWidth?: boolean;
   /** Decreases the maximum layout width. Intended for single-column layouts */
   singleColumn?: boolean;
-  /** Force render of title, breadcrumbs, and actions in page on embedded app, default false */
+  /**
+   * Force render in page and do not delegate to the app bridge TitleBar action
+   * @default false
+   * @embeddedAppOnly
+   * */
   forceRender?: boolean;
 }
 
@@ -41,7 +45,7 @@ export class Page extends React.PureComponent<ComposedProps, never> {
   private titlebar: AppBridgeTitleBar.TitleBar | undefined;
 
   componentDidMount() {
-    if (!this.renderWithAppBridge) {
+    if (this.delegateToAppbridge === false) {
       return;
     }
 
@@ -52,7 +56,7 @@ export class Page extends React.PureComponent<ComposedProps, never> {
   }
 
   componentDidUpdate(prevProps: ComposedProps) {
-    if (!this.titlebar || !this.renderWithAppBridge) {
+    if (this.titlebar == null || this.delegateToAppbridge === false) {
       return;
     }
 
@@ -66,7 +70,7 @@ export class Page extends React.PureComponent<ComposedProps, never> {
   }
 
   componentWillUnmount() {
-    if (!this.titlebar || !this.renderWithAppBridge) {
+    if (this.titlebar == null || this.delegateToAppbridge === false) {
       return;
     }
 
@@ -83,7 +87,7 @@ export class Page extends React.PureComponent<ComposedProps, never> {
     );
 
     const headerMarkup =
-      this.renderWithAppBridge || this.hasHeaderContent() === false ? null : (
+      this.delegateToAppbridge || this.hasHeaderContent() === false ? null : (
         <Header {...rest} />
       );
 
@@ -95,13 +99,13 @@ export class Page extends React.PureComponent<ComposedProps, never> {
     );
   }
 
-  private get renderWithAppBridge(): boolean {
+  private get delegateToAppbridge(): boolean {
     const {
       polaris: {appBridge},
       forceRender = false,
     } = this.props;
 
-    if (appBridge && !forceRender) {
+    if (appBridge != null && forceRender === false) {
       return true;
     }
 
