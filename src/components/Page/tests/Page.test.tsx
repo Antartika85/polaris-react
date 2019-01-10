@@ -42,6 +42,18 @@ describe('<Page />', () => {
     };
   }
 
+  describe('forceRender renders children in page', () => {
+    const {
+      createSpy: titleBarCreateSpy,
+      restore: restoreTitleBarCreateMock,
+    } = mockTitleBarCreate();
+    const {page} = mountWithAppBridge(<Page {...mockProps} forceRender />);
+
+    expect(page.find(Header).exists()).toBeTruthy();
+    expect(titleBarCreateSpy).not.toHaveBeenCalled();
+    restoreTitleBarCreateMock();
+  });
+
   describe('children', () => {
     it('renders its children', () => {
       const card = <Card />;
