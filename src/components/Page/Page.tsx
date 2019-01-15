@@ -105,11 +105,7 @@ export class Page extends React.PureComponent<ComposedProps, never> {
       forceRender = false,
     } = this.props;
 
-    if (appBridge != null && forceRender === false) {
-      return true;
-    }
-
-    return false;
+    return appBridge != null && forceRender === false;
   }
 
   private hasHeaderContent(): boolean {
