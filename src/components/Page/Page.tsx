@@ -27,6 +27,7 @@ export interface Props extends HeaderProps {
    * Force render in page and do not delegate to the app bridge TitleBar action
    * @default false
    * @embeddedAppOnly
+   * @see {@link https://polaris.shopify.com/components/structure/page#section-use-in-an-embedded-application|Shopify Page Component docs}
    * */
   forceRender?: boolean;
 }
